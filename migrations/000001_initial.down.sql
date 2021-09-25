@@ -1,0 +1,39 @@
+DROP TABLE IF EXISTS post_topics CASCADE;
+
+DROP TRIGGER IF EXISTS set_updated_at_topics ON topics CASCADE;
+
+DROP TABLE IF EXISTS topics CASCADE;
+
+DROP TABLE IF EXISTS post_tags CASCADE;
+
+DROP TRIGGER IF EXISTS set_updated_at_tags ON tags CASCADE;
+
+DROP TABLE IF EXISTS tags CASCADE;
+
+DROP TABLE IF EXISTS post_authors CASCADE;
+
+DROP TRIGGER IF EXISTS set_updated_at_posts ON posts CASCADE;
+
+DROP TRIGGER IF EXISTS set_published_at_posts ON posts CASCADE;
+
+DROP FUNCTION IF EXISTS set_published_at() CASCADE;
+
+DROP TABLE IF EXISTS posts CASCADE;
+
+DROP TYPE IF EXISTS post_status CASCADE;
+
+DROP TRIGGER IF EXISTS set_updated_at_users ON users CASCADE;
+
+DROP TRIGGER IF EXISTS users_null_constraint ON users CASCADE;
+
+DROP FUNCTION IF EXISTS users_null_constraint() CASCADE;
+
+DROP TABLE IF EXISTS users CASCADE;
+
+DROP TYPE IF EXISTS user_role CASCADE;
+
+DROP TRIGGER IF EXISTS set_updated_at_settings ON settings CASCADE;
+
+DROP TABLE IF EXISTS settings CASCADE;
+
+DROP FUNCTION IF EXISTS set_updated_at() CASCADE;

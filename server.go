@@ -51,12 +51,10 @@ func (s *server) Initialize() {
 func (s *server) graceFullShutdown() {
 	go func() {
 		sigint := make(chan os.Signal, 1)
-		signal.Notify(sigint, os.Interrupt, syscall.SIGINT, syscall.SIGABRT, syscall.SIGTERM, syscall.SIGKILL)
+		signal.Notify(sigint, os.Interrupt, syscall.SIGINT, syscall.SIGABRT, syscall.SIGTERM)
 
-		select {
-		case sig := <-sigint:
-			s.logger.Info("OS terminate signal received", zap.String("signal", sig.String()))
-		}
+		sig := <-sigint
+		s.logger.Info("OS terminate signal received", zap.String("signal", sig.String()))
 
 		s.logger.Debug("Shutting down server")
 

@@ -39,6 +39,10 @@ func Get() *App {
 	return cfg
 }
 
+func Reset() {
+	// TODO: Setup reset
+}
+
 func saveConfig() {
 	if err := viper.SafeWriteConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileAlreadyExistsError); ok {
@@ -56,16 +60,21 @@ func setDefaults() {
 }
 
 func readConfig() {
-	viper.SetConfigName("config")
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("Failed to find home directory")
+	}
+
+	viper.SetConfigName(".blog")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(homeDir)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; We need to ask the DB details
 			askOnCLI()
 		} else {
-			log.Panicf("Failed to read the config file: %v", err)
+			log.Fatalf("Failed to read the config file: %v", err)
 		}
 	}
 }

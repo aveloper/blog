@@ -1,17 +1,19 @@
-package main
+package logger
 
 import (
-	"blog/config"
 	"log"
 
-	"go.uber.org/zap/zapcore"
-
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-//getLogger creates a new instance of the logger based on the config
-func getLogger(production bool, cfg *config.Logger) *zap.Logger {
-	if production {
+type Config struct {
+	Production bool
+}
+
+//New creates a new instance of the logger based on the config
+func New(cfg *Config) *zap.Logger {
+	if cfg.Production {
 		logger, err := zap.NewProduction()
 		if err != nil {
 			log.Panicf("Failed to initialize production logger: %v", err)

@@ -1,15 +1,13 @@
-package main
+package db
 
 import (
-	"blog/db"
+	"database/sql"
 	"embed"
 	"errors"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	"github.com/jackc/pgx/v4/stdlib"
-
 	"go.uber.org/zap"
 )
 
@@ -21,7 +19,7 @@ const migrationVersion = 1
 var migrations embed.FS
 
 //runMigrations migrates the postgres schema to the current version
-func runMigrations(db *db.DB, logger *zap.Logger) {
+func runMigrations(db *sql.DB, logger *zap.Logger) {
 	// Read the source for the migrations.
 	// Our source is the SQL files in the migrations folder
 	source, err := iofs.New(migrations, "migrations")
@@ -39,13 +37,13 @@ func runMigrations(db *db.DB, logger *zap.Logger) {
 	}()
 
 	// Connect with the target i.e, our postgres DB
-	target, err := postgres.WithInstance(stdlib.OpenDB(*db.Config()), new(postgres.Config))
+	target, err := postgres.WithInstance(db, new(postgres.Config))
 	if err != nil {
 		logger.Panic("failed to read migration target", zap.Error(err))
 		return
 	}
 
-	// Ensure that we clos the target connection
+	// Ensure that we close the target connection
 	defer func() {
 		err := target.Close()
 		if err != nil {
@@ -68,5 +66,10 @@ func runMigrations(db *db.DB, logger *zap.Logger) {
 		logger.Panic("failed to run migration", zap.Error(err), zap.Int("version", migrationVersion))
 	}
 
-	logger.Info("Successfully executed migrations", zap.Int("version", migrationVersion))
+	if err != nil && errors.Is(err, migrate.ErrNoChange) {
+		logger.Info("Database is already migrated. Nothing to change", zap.Int("version", migrationVersion))
+		return
+	}
+
+	logger.Info("Successfully executed migrations for DB", zap.Int("version", migrationVersion))
 }

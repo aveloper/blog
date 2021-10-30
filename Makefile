@@ -9,9 +9,13 @@ add_migration: check_migrate
 check_lint:
 	which staticcheck || go install honnef.co/go/tools/cmd/staticcheck@latest
 
-lint: check_lint
+check_sqlc:
+	which sqlc || go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+
+lint: check_lint check_sqlc
 	go vet ./...
 	staticcheck ./...
+	sqlc compile
 
 build:
 	@sh -c './scripts/build.sh'
@@ -24,3 +28,6 @@ install:
 
 reset:
 	./output/blog reset
+
+gen:
+	go generate ./...

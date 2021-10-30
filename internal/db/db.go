@@ -12,6 +12,8 @@ import (
 	"go.uber.org/zap"
 )
 
+//go:generate sqlc generate
+
 type DB struct {
 	*pgx.Conn
 }
@@ -60,7 +62,7 @@ func GetConnection(ctx context.Context, cfg *Config, logger *zap.Logger) (*DB, e
 
 	dbConn = conn
 
-	return dbConn, nil
+	return dbConn, err
 }
 
 //getPgxConfig builds and returns the pgx connection config

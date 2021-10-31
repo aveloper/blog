@@ -18,3 +18,9 @@ build:
 
 run: build
 	./blog
+
+install:
+	./output/blog install
+
+reset:
+	./output/blog reset

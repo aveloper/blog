@@ -36,7 +36,6 @@ const (
 	UserRoleEditor      UserRole = "editor"
 	UserRoleAuthor      UserRole = "author"
 	UserRoleContributor UserRole = "contributor"
-	UserRoleSubscriber  UserRole = "subscriber"
 )
 
 func (e *UserRole) Scan(src interface{}) error {
@@ -89,6 +88,15 @@ type Setting struct {
 	UpdatedAt time.Time `db:"updated_at"`
 }
 
+type Subscriber struct {
+	ID            int32     `db:"id"`
+	Email         string    `db:"email"`
+	EmailVerified bool      `db:"email_verified"`
+	Unsubscribed  bool      `db:"unsubscribed"`
+	CreatedAt     time.Time `db:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at"`
+}
+
 type Tag struct {
 	ID        int32     `db:"id"`
 	Name      string    `db:"name"`
@@ -105,12 +113,12 @@ type Topic struct {
 }
 
 type User struct {
-	ID            int32          `db:"id"`
-	Name          sql.NullString `db:"name"`
-	Email         string         `db:"email"`
-	Password      sql.NullString `db:"password"`
-	Role          UserRole       `db:"role"`
-	EmailVerified bool           `db:"email_verified"`
-	CreatedAt     time.Time      `db:"created_at"`
-	UpdatedAt     time.Time      `db:"updated_at"`
+	ID            int32     `db:"id"`
+	Name          string    `db:"name"`
+	Email         string    `db:"email"`
+	Password      string    `db:"password"`
+	Role          UserRole  `db:"role"`
+	EmailVerified bool      `db:"email_verified"`
+	CreatedAt     time.Time `db:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at"`
 }

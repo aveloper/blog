@@ -1,3 +1,7 @@
+DROP TRIGGER IF EXISTS set_updated_at_subscribers ON subscribers CASCADE;
+
+DROP TABLE IF EXISTS subscribers;
+
 DROP TABLE IF EXISTS post_topics CASCADE;
 
 DROP TRIGGER IF EXISTS set_updated_at_topics ON topics CASCADE;

@@ -5,7 +5,6 @@ package query
 
 import (
 	"context"
-	"database/sql"
 )
 
 const addUser = `-- name: AddUser :one
@@ -15,10 +14,10 @@ RETURNING id, name, email, password, role, email_verified, created_at, updated_a
 `
 
 type AddUserParams struct {
-	Name     sql.NullString `db:"name"`
-	Email    string         `db:"email"`
-	Password sql.NullString `db:"password"`
-	Role     UserRole       `db:"role"`
+	Name     string   `db:"name"`
+	Email    string   `db:"email"`
+	Password string   `db:"password"`
+	Role     UserRole `db:"role"`
 }
 
 func (q *Queries) AddUser(ctx context.Context, arg AddUserParams) (User, error) {
@@ -120,11 +119,11 @@ RETURNING id, name, email, password, role, email_verified, created_at, updated_a
 `
 
 type UpdateUserParams struct {
-	Name          sql.NullString `db:"name"`
-	Email         string         `db:"email"`
-	Role          UserRole       `db:"role"`
-	EmailVerified bool           `db:"email_verified"`
-	ID            int32          `db:"id"`
+	Name          string   `db:"name"`
+	Email         string   `db:"email"`
+	Role          UserRole `db:"role"`
+	EmailVerified bool     `db:"email_verified"`
+	ID            int32    `db:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -157,8 +156,8 @@ RETURNING id, name, email, password, role, email_verified, created_at, updated_a
 `
 
 type UpdateUserPasswordParams struct {
-	Password sql.NullString `db:"password"`
-	ID       int32          `db:"id"`
+	Password string `db:"password"`
+	ID       int32  `db:"id"`
 }
 
 func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error) {

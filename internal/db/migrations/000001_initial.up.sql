@@ -35,7 +35,7 @@ EXECUTE FUNCTION set_updated_at();
 /**
 Type for all possible user roles
 */
-CREATE TYPE user_role AS ENUM ('owner', 'admin', 'editor', 'author', 'contributor', 'subscriber');
+CREATE TYPE user_role AS ENUM ('owner', 'admin', 'editor', 'author', 'contributor');
 
 /**
   Users table
@@ -43,39 +43,14 @@ CREATE TYPE user_role AS ENUM ('owner', 'admin', 'editor', 'author', 'contributo
 CREATE TABLE users
 (
     id             SERIAL PRIMARY KEY       NOT NULL,
-    name           VARCHAR(200)                      DEFAULT NULL,
+    name           VARCHAR(200)             NOT NULL,
     email          VARCHAR(200)             NOT NULL UNIQUE,
-    password       TEXT                              DEFAULT NULL,
-    role           user_role                NOT NULL DEFAULT 'subscriber'::user_role,
+    password       TEXT                     NOT NULL,
+    role           user_role                NOT NULL DEFAULT 'contributor'::user_role,
     email_verified BOOLEAN                  NOT NULL DEFAULT FALSE,
     created_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
-
-/**
-  Null constraints for user
- */
-CREATE FUNCTION users_null_constraint() RETURNS TRIGGER
-    LANGUAGE plpgsql AS
-$BODY$
-BEGIN
-
-    IF NEW."role" != 'subscriber' THEN
-        IF NEW."name" IS NULL OR NEW."password" IS NULL THEN
-            RAISE EXCEPTION 'name and password must not be null for users with non-subscriber role';
-        END IF;
-    END IF;
-
-    RETURN NULL;
-END;
-$BODY$;
-
-CREATE CONSTRAINT TRIGGER users_null_constraint
-    AFTER INSERT OR UPDATE
-    ON users
-    FOR EACH ROW
-EXECUTE FUNCTION users_null_constraint();
-
 
 CREATE TRIGGER set_updated_at_users
     BEFORE UPDATE
@@ -203,11 +178,21 @@ CREATE TABLE post_topics
     UNIQUE (topic_id, post_id)
 );
 
+/**
+  Table to store subscribers
+ */
+CREATE TABLE subscribers
+(
+    id             SERIAL                   NOT NULL PRIMARY KEY,
+    email          VARCHAR(200)             NOT NULL UNIQUE,
+    email_verified BOOLEAN                  NOT NULL DEFAULT FALSE,
+    unsubscribed   BOOLEAN                  NOT NULL DEFAULT FALSE,
+    created_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
 
-
-
-
-
-
-
-
+CREATE TRIGGER set_updated_at_subscribers
+    BEFORE UPDATE
+    ON subscribers
+    FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();

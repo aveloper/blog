@@ -20,6 +20,7 @@ const migrationVersion = 1
 //go:embed migrations/*.sql
 var migrations embed.FS
 
+//getNewMigration get the new migrate instance 
 func getNewMigration(db *sql.DB) (source.Driver, database.Driver, *migrate.Migrate, error) {
 	// Read the source for the migrations.
 	// Our source is the SQL files in the migrations folder
@@ -86,7 +87,10 @@ func upMigrations(db *sql.DB, logger *zap.Logger) {
 func downMigration(db *sql.DB, logger *zap.Logger) error {
 	
 	source, target, m, err := getNewMigration(db)
-	
+	if  err != nil {
+		logger.Panic(" failed to run the down migration ",zap.Error(err))
+	}
+
 	// Ensure that we close the source connection
 	defer func() {
 		err := source.Close()

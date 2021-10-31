@@ -11,6 +11,7 @@ import (
 )
 
 func install(cmd *cobra.Command, _ []string) {
+	// TODO: Figure out how force will work and implement
 	force, err := cmd.Flags().GetBool("force")
 	cobra.CheckErr(err)
 

@@ -20,8 +20,9 @@ const migrationVersion = 1
 //go:embed migrations/*.sql
 var migrations embed.FS
 
-//getNewMigration get the new migrate instance 
-func getNewMigration(db *sql.DB) (source.Driver, database.Driver, *migrate.Migrate, error) {
+//buildMigrationClient get the new migrate instance
+//source & target connection are needed to close it in the calling function
+func buildMigrationClient(db *sql.DB) (source.Driver, database.Driver, *migrate.Migrate, error) {
 	// Read the source for the migrations.
 	// Our source is the SQL files in the migrations folder
 	source, err := iofs.New(migrations, "migrations")
@@ -47,7 +48,7 @@ func getNewMigration(db *sql.DB) (source.Driver, database.Driver, *migrate.Migra
 //upMigrations migrates the postgres schema to the current version
 func upMigrations(db *sql.DB, logger *zap.Logger) {
 
-	source, target, m, err := getNewMigration(db)
+	source, target, m, err := buildMigrationClient(db)
 	if  err != nil {
 		logger.Panic(" failed to run the migration ",zap.Error(err))
 	}
@@ -86,7 +87,7 @@ func upMigrations(db *sql.DB, logger *zap.Logger) {
 //downMigration migrates the postgres schema from the active migration version to all the way down
 func downMigration(db *sql.DB, logger *zap.Logger) error {
 	
-	source, target, m, err := getNewMigration(db)
+	source, target, m, err := buildMigrationClient(db)
 	if  err != nil {
 		logger.Panic(" failed to run the down migration ",zap.Error(err))
 	}

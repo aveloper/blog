@@ -1,13 +1,15 @@
 package cmd
 
 import (
-	"context"
+	"os"
+
+	"go.uber.org/zap"
+
 	"github.com/aveloper/blog/internal/config"
 	"github.com/aveloper/blog/internal/db"
 	"github.com/aveloper/blog/internal/logger"
+
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
-	"os"
 )
 
 func install(cmd *cobra.Command, _ []string) {
@@ -38,7 +40,7 @@ func install(cmd *cobra.Command, _ []string) {
 		ForceTLS: false,
 	}
 
-	_, err = db.Get(context.Background(), dbCfg, log)
+	err = db.Setup(dbCfg, log)
 	if err != nil {
 		log.Error("DB Error", zap.Error(err))
 		os.Exit(1)

@@ -59,6 +59,15 @@ var startCmd = &cobra.Command{
 	Run:    start,
 }
 
+//resetCmd to delete the data from database
+var resetCmd = &cobra.Command{
+	Use:    "reset",
+	Short:  "delete the data from database",
+	Long:   `TODO`,
+	Hidden: true,
+	Run:    reset,
+}
+
 //addCommands adds all the commands to the root command
 func addCommands() {
 	rootCmd.AddCommand(versionCmd)
@@ -66,6 +75,7 @@ func addCommands() {
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(updateCmd)
 	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(resetCmd)
 }
 
 //addFlags adds all the flags for the commands

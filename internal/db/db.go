@@ -25,8 +25,8 @@ type Config struct {
 	ForceTLS bool
 }
 
-//Get creates and returns a new DB connection
-func Get(ctx context.Context, cfg *Config, logger *zap.Logger) (*DB, error) {
+//getConnConfig return a ConnConfig
+func getConnConfig(cfg *Config, logger *zap.Logger) (*pgx.ConnConfig, error) {
 	sslMode := "disable"
 
 	if cfg.ForceTLS {
@@ -53,13 +53,44 @@ func Get(ctx context.Context, cfg *Config, logger *zap.Logger) (*DB, error) {
 	connConfig.LogLevel = pgx.LogLevelDebug
 	connConfig.Logger = zapadapter.NewLogger(logger)
 
+	return connConfig, nil
+}
+
+
+//Get creates and returns a new DB connection
+func Get(ctx context.Context, cfg *Config, logger *zap.Logger) (*DB, error) {
+
+	connConfig, err := getConnConfig(cfg, logger)
+	if err != nil {
+		return nil, err
+	}
+
 	conn, err := pgx.ConnectConfig(ctx, connConfig)
 	if err != nil {
 		logger.Error("Failed to connect to DB", zap.Error(err))
 		return nil, fmt.Errorf("failed to connect to DB: %w", err)
 	}
 
-	runMigrations(stdlib.OpenDB(*connConfig), logger)
+	//execute the .up.sql files
+	upMigrations(stdlib.OpenDB(*connConfig), logger)
 
 	return &DB{Conn: conn}, nil
+}
+
+//Down to run the down migrations
+func Down(ctx context.Context, cfg *Config, logger *zap.Logger) error {
+
+	connConfig, err := getConnConfig(cfg, logger)
+	if err != nil {
+		return err
+	}
+
+	_, err = pgx.ConnectConfig(ctx, connConfig)
+	if err != nil {
+		logger.Error("Failed to connect to DB", zap.Error(err))
+		return fmt.Errorf("failed to connect to DB: %w", err)
+	}
+
+	//execute the .down.sql files
+	return downMigration(stdlib.OpenDB(*connConfig), logger)
 }

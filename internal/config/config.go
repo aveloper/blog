@@ -39,8 +39,20 @@ func Get() *App {
 	return cfg
 }
 
+// Reset for deleting the .blog.yaml file from home directory
 func Reset() {
-	// TODO: Setup reset
+	//1. get the .blog.yaml file
+	//2. delete the file
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("Failed to find home directory")
+	}
+
+	err = os.Remove(homeDir+"/.blog.yaml")
+	if err != nil {
+		log.Fatalf("Failed to delete the file")
+	}
 }
 
 func saveConfig() {

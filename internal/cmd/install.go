@@ -2,14 +2,12 @@ package cmd
 
 import (
 	"context"
-	"os"
-
-	"go.uber.org/zap"
-
 	"github.com/aveloper/blog/internal/config"
 	"github.com/aveloper/blog/internal/db"
 	"github.com/aveloper/blog/internal/logger"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+	"os"
 )
 
 func install(cmd *cobra.Command, _ []string) {

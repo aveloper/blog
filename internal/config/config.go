@@ -39,8 +39,8 @@ func Get() *App {
 	return cfg
 }
 
+// Reset for deleting the .blog.yaml file from home directory
 func Reset() {
-	// TODO: Setup reset
 	//1. get the .blog.yaml file
 	//2. delete the file
 

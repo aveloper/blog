@@ -10,22 +10,8 @@ import (
 	"os"
 )
 
-func install(cmd *cobra.Command, _ []string) {
-	force, err := cmd.Flags().GetBool("force")
-	cobra.CheckErr(err)
-
-	// If the command install, was called with force flag
-	// reset the config
-	if force {
-		config.Reset()
-	}
-
-	// Install steps
-	// 1. Read config and create if not already present
-	// 2. Connect to DB and run migrations
-	// 3. Setup autostart
+func reset(*cobra.Command, []string) {
 	cfg := config.Get()
-
 	log := logger.New(&logger.Config{Production: cfg.Production})
 
 	dbCfg := &db.Config{
@@ -37,11 +23,11 @@ func install(cmd *cobra.Command, _ []string) {
 		ForceTLS: false,
 	}
 
-	_, err = db.Get(context.Background(), dbCfg, log)
+	err := db.Down(context.Background(), dbCfg, log)
 	if err != nil {
-		log.Error("DB Error", zap.Error(err))
+		log.Error("Failed to run the down migration", zap.Error(err))
 		os.Exit(1)
 	}
 
-	// TODO: Setup autostart
+	log.Info("Successfully run the down migrations")
 }

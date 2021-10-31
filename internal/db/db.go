@@ -34,7 +34,11 @@ func Setup(cfg *Config, logger *zap.Logger) error {
 		return err
 	}
 
-	runMigrations(stdlib.OpenDB(*pgxConfig), logger)
+	err = runUpMigrations(stdlib.OpenDB(*pgxConfig), logger)
+	if err != nil {
+		logger.Error("failed to run migrations", zap.Error(err))
+		return err
+	}
 
 	return nil
 }
@@ -63,6 +67,23 @@ func GetConnection(ctx context.Context, cfg *Config, logger *zap.Logger) (*DB, e
 	dbConn = conn
 
 	return dbConn, err
+}
+
+//Down to run the down migrations
+func Down(ctx context.Context, cfg *Config, logger *zap.Logger) error {
+	connConfig, err := getPgxConfig(cfg, logger)
+	if err != nil {
+		return err
+	}
+
+	_, err = pgx.ConnectConfig(ctx, connConfig)
+	if err != nil {
+		logger.Error("Failed to connect to DB", zap.Error(err))
+		return fmt.Errorf("failed to connect to DB: %w", err)
+	}
+
+	//execute the .down.sql files
+	return runDownMigration(stdlib.OpenDB(*connConfig), logger)
 }
 
 //getPgxConfig builds and returns the pgx connection config

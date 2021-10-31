@@ -15,7 +15,7 @@ check_sqlc:
 lint: check_lint check_sqlc
 	go vet ./...
 	staticcheck ./...
-	sqlc compile
+	cd internal/db && sqlc compile
 
 build:
 	@sh -c './scripts/build.sh'

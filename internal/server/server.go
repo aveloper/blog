@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aveloper/blog/internal/db"
+
 	"github.com/aveloper/blog/internal/server/api"
 	"github.com/aveloper/blog/internal/server/web"
 
@@ -24,6 +26,8 @@ type Server struct {
 	logger *zap.Logger
 	router *mux.Router
 
+	db *db.DB
+
 	//connClose channel is closed when the http.Server is shutdown.
 	// It can be used to listen when the server closes
 	connClose chan int
@@ -38,7 +42,7 @@ type Config struct {
 }
 
 //NewServer creates a new instance of Server
-func NewServer(cfg *Config) *Server {
+func NewServer(cfg *Config, db *db.DB) *Server {
 	r := mux.NewRouter().StrictSlash(true)
 	return &Server{
 		logger:    cfg.Logger,
@@ -50,6 +54,7 @@ func NewServer(cfg *Config) *Server {
 			WriteTimeout: 5 * time.Second,
 		},
 		apiOnly: cfg.APIOnly,
+		db:      db,
 	}
 }
 
@@ -74,7 +79,7 @@ func (s *Server) setup() {
 	}
 
 	apiRouter := s.router.PathPrefix("/api").Subrouter()
-	api.Routes(apiRouter)
+	api.Routes(apiRouter, s.logger, s.db)
 
 	// Add middlewares and handlers here
 

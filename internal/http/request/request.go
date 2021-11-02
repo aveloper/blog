@@ -18,9 +18,11 @@ type Reader struct {
 }
 
 // NewReader returns a new instance of Reader
-func NewReader(log *zap.Logger) *Reader {
+func NewReader(log *zap.Logger, jw *response.JSONWriter, validator *validator.Validator) *Reader {
 	return &Reader{
-		log: log,
+		log:       log,
+		jw:        jw,
+		validator: validator,
 	}
 }
 

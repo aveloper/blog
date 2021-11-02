@@ -10,8 +10,8 @@ import (
 	"github.com/aveloper/blog/internal/http/response"
 )
 
-// ParseError struct defines the structure of the JSON parsing error
 type (
+	// ParseError struct defines the structure of the JSON parsing error
 	ParseError struct {
 		Msg     string             `json:"message"`
 		ErrCode response.ErrorCode `json:"code"`

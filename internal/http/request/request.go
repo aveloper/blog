@@ -52,7 +52,7 @@ func (read *Reader) ReadJSONRequest(r *http.Request, v interface{}) error {
 //validate functions uses the validator to test issues with the given data
 func (read *Reader) validate(v interface{}) response.APIError {
 	fields := read.validator.IsValidStruct(v)
-	if fields == nil || len(fields) == 0 {
+	if len(fields) == 0 {
 		return nil
 	}
 

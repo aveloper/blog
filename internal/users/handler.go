@@ -38,7 +38,6 @@ func (h *Handler) addUser() http.HandlerFunc {
 		Name          string    `json:"name"`
 		Email         string    `json:"email"`
 		Role          string    `json:"role"`
-		EmailVerified bool      `json:"email_verified"`
 		CreatedAt     time.Time `json:"created_at"`
 		UpdatedAt     time.Time `json:"updated_at"`
 	}
@@ -70,7 +69,6 @@ func (h *Handler) addUser() http.HandlerFunc {
 			Name:          user.Name,
 			Email:         user.Email,
 			Role:          string(user.Role),
-			EmailVerified: user.EmailVerified,
 			CreatedAt:     user.CreatedAt,
 			UpdatedAt:     user.UpdatedAt,
 		}

@@ -1,5 +1,11 @@
 #!/bin/sh
 
+echo "Building Admin UI"
+
+cd internal/admin/ui && npm run build
+
+cd ../../..
+
 echo "Running go generate"
 
 go generate ./...

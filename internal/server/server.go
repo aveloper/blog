@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aveloper/blog/internal/logger"
+
 	"github.com/aveloper/blog/internal/db"
 
 	"github.com/aveloper/blog/internal/server/api"
@@ -84,6 +86,7 @@ func (s *Server) setup() {
 	// Add middlewares and handlers here
 
 	s.server.Handler = s.router
+	s.server.Handler = logger.NewHandler(s.logger)(s.server.Handler)
 }
 
 func (s *Server) graceFullShutdown() {

@@ -95,9 +95,10 @@ func (h *Handler) addUser() http.HandlerFunc {
 
 func (h *Handler) updateUser() http.HandlerFunc{
 	type Request struct {
-		Name     string `json:"name" validate:"required"`
-		Email    string `json:"email" validate:"required,email"`
-		Role     string `json:"role" validate:"required,oneof=admin editor author contributor"`
+		ID       int32     	`json:"id" validate:"required"`
+		Name     string 		`json:"name" validate:"required"`
+		Email    string 		`json:"email" validate:"required,email"`
+		Role     string 		`json:"role" validate:"required,oneof=admin editor author contributor"`
 	}
 
 	type Response struct {
@@ -118,6 +119,7 @@ func (h *Handler) updateUser() http.HandlerFunc{
 		}
 
 		user, err := h.repository.UpdateUser(r.Context(), query.UpdateUserParams{
+			ID: 			req.ID,
 			Name:     req.Name,
 			Email:    req.Email,
 			Role:     query.UserRole(req.Role),
@@ -145,6 +147,7 @@ func (h *Handler) updateUser() http.HandlerFunc{
 
 func (h *Handler) updateUserName() http.HandlerFunc{
 	type Request struct {
+		ID       int32     	`json:"id" validate:"required"`
 		Name     string `json:"name" validate:"required"`
 	}
 
@@ -166,6 +169,7 @@ func (h *Handler) updateUserName() http.HandlerFunc{
 		}
 
 		user, err := h.repository.UpdateUserName(r.Context(), query.UpdateUserNameParams{
+			ID: 			req.ID,
 			Name:     req.Name,
 		})
 		if err != nil {
@@ -190,6 +194,7 @@ func (h *Handler) updateUserName() http.HandlerFunc{
 
 func (h *Handler) updateUserEmail() http.HandlerFunc{
 	type Request struct {
+		ID       int32     	`json:"id" validate:"required"`
 		Email    string `json:"email" validate:"required,email"`
 	}
 
@@ -211,6 +216,7 @@ func (h *Handler) updateUserEmail() http.HandlerFunc{
 		}
 
 		user, err := h.repository.UpdateUserEmail(r.Context(), query.UpdateUserEmailParams{
+			ID:				req.ID,
 			Email:    req.Email,
 		})
 		if err != nil {
@@ -235,6 +241,7 @@ func (h *Handler) updateUserEmail() http.HandlerFunc{
 
 func (h *Handler) updateUserPassword() http.HandlerFunc{
 	type Request struct {
+		ID       int32     	`json:"id" validate:"required"`
 		Password string `json:"password" validate:"required,gte=8"`
 	}
 
@@ -270,6 +277,7 @@ func (h *Handler) updateUserPassword() http.HandlerFunc{
 		}
 
 		user, err := h.repository.UpdateUserPassword(r.Context(), query.UpdateUserPasswordParams{
+			ID: 			req.ID,
 			Password: hash,
 		})
 		if err != nil {
@@ -295,6 +303,7 @@ func (h *Handler) updateUserPassword() http.HandlerFunc{
 
 func (h *Handler) updateUserRole() http.HandlerFunc{
 	type Request struct {
+		ID       int32     	`json:"id" validate:"required"`
 		Role     string `json:"role" validate:"required,oneof=admin editor author contributor"`
 	}
 
@@ -316,6 +325,7 @@ func (h *Handler) updateUserRole() http.HandlerFunc{
 		}
 
 		user, err := h.repository.UpdateUserRole(r.Context(), query.UpdateUserRoleParams{
+			ID:				req.ID,
 			Role:     query.UserRole(req.Role),
 		})
 		if err != nil {
@@ -333,6 +343,38 @@ func (h *Handler) updateUserRole() http.HandlerFunc{
 			UpdatedAt:     user.UpdatedAt,
 		}
 
+
+		h.jsonWriter.Ok(w, r, resp)
+	}
+}
+
+func (h *Handler) DeleteUser() http.HandlerFunc {
+	type Request struct {
+		ID            int32     `json:"id" validate:"required"`
+	}
+
+	type Response struct {
+		Message				string		`json:"message"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &Request{}
+
+		ok := h.reader.ReadJSONAndValidate(w, r, req)
+		if !ok {
+			return
+		}
+
+		err := h.repository.DeleteUser(r.Context(), req.ID)
+		if err != nil {
+			h.log.Error("Failed to delete user from DB", zap.Error(err))
+			h.jsonWriter.DefaultError(w, r)
+			return
+		}
+
+		resp := &Response{
+			Message: "User successfully deleted",
+		}
 
 		h.jsonWriter.Ok(w, r, resp)
 	}

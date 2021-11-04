@@ -89,3 +89,14 @@ func (r *Repository) UpdateUserPassword(ctx context.Context, user query.UpdateUs
 	return &u, nil
 }
 
+//DeleteUser delete the existing user
+func (r *Repository) DeleteUser(ctx context.Context, id int32) error {
+	err := r.q.DeleteUser(ctx, id)
+	if err != nil {
+		r.log.Error("failed to delete the user ", zap.Error(err))
+		return  err
+	}
+
+	return nil
+}
+

@@ -17,6 +17,24 @@ SET name           = $1,
 WHERE id = $4
 RETURNING *;
 
+-- name: UpdateUserName :one
+UPDATE users
+SET name = $1
+WHERE id = $2
+RETURNING *;
+
+-- name: UpdateUserEmail :one
+UPDATE users
+SET email = $1
+WHERE id = $2
+RETURNING *;
+
+-- name: UpdateUserRole :one
+UPDATE users
+SET role = $1
+WHERE id = $2
+RETURNING *;
+
 -- name: DeleteUser :exec
 DELETE
 FROM users

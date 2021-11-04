@@ -91,3 +91,7 @@ func (h *Handler) addUser() http.HandlerFunc {
 		h.jsonWriter.Ok(w, r, resp)
 	}
 }
+
+func (h *Handler) updateUser() http.HandlerFunc{
+	return nil
+}

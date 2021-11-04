@@ -33,6 +33,7 @@ type (
 	}
 
 	defaultErr struct{}
+	invalidPasswordErr struct {}
 )
 
 func (d *defaultErr) Message() string {
@@ -44,5 +45,18 @@ func (d *defaultErr) Code() ErrorCode {
 }
 
 func (d *defaultErr) Data() interface{} {
+	return nil
+}
+
+
+func (d *invalidPasswordErr) Message() string {
+	return "Password should contain at least one Uppercase, Lowercase, Number and a Special character"
+}
+
+func (d *invalidPasswordErr) Code() ErrorCode {
+	return DefaultErrorCode
+}
+
+func (d *invalidPasswordErr) Data() interface{} {
 	return nil
 }

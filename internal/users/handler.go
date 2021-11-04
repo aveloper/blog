@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/aveloper/blog/internal/utils"
 	"net/http"
 	"time"
 
@@ -50,11 +51,24 @@ func (h *Handler) addUser() http.HandlerFunc {
 			return
 		}
 
+		ok = utils.ValidatePassword(req.Password)
+		if !ok {
+			h.log.Error("Password is not matching the requirements "+ req.Password)
+			h.jsonWriter.InvalidPasswordErr(w, r)
+			return
+		}
+
+		hash, err := utils.HashAndSalt([]byte(req.Password), h.log)
+		if err != nil {
+			h.jsonWriter.DefaultError(w, r)
+			return
+		}
+
 		// FIXME: Hash password before saving
 		user, err := h.repository.AddUser(r.Context(), query.AddUserParams{
 			Name:     req.Name,
 			Email:    req.Email,
-			Password: req.Password,
+			Password: hash,
 			Role:     query.UserRole(req.Role),
 		})
 		if err != nil {
@@ -73,7 +87,6 @@ func (h *Handler) addUser() http.HandlerFunc {
 			UpdatedAt:     user.UpdatedAt,
 		}
 
-		// TODO: Send verification Email
 
 		h.jsonWriter.Ok(w, r, resp)
 	}

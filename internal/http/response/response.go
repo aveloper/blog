@@ -62,6 +62,10 @@ func (j *JSONWriter) Internal(w http.ResponseWriter, r *http.Request, apiError A
 	j.Error(w, r, apiError, http.StatusInternalServerError)
 }
 
+func (j *JSONWriter) InvalidPasswordErr(w http.ResponseWriter, r *http.Request) {
+	j.Error(w, r, &invalidPasswordErr{}, http.StatusBadRequest)
+}
+
 //DefaultError sends unknown error to client with http status 500
 func (j *JSONWriter) DefaultError(w http.ResponseWriter, r *http.Request) {
 	j.Error(w, r, &defaultErr{}, http.StatusInternalServerError)

@@ -49,7 +49,7 @@ func Reset() {
 		log.Fatalf("Failed to find home directory")
 	}
 
-	err = os.Remove(homeDir+"/.blog.yaml")
+	err = os.Remove(homeDir + "/.blog.yaml")
 	if err != nil {
 		log.Fatalf("Failed to delete the file")
 	}

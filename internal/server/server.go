@@ -78,7 +78,7 @@ func (s *Server) setup() {
 	defer s.graceFullShutdown()
 
 	if !s.apiOnly {
-		web.Routes(s.router)
+		web.Routes(s.router, s.logger)
 	}
 
 	apiRouter := s.router.PathPrefix("/api").Subrouter()

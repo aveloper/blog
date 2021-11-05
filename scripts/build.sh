@@ -1,13 +1,19 @@
 #!/bin/sh
 
+echo "Building Admin UI"
+
+cd internal/admin/ui && npm install && npm run build || exit 1
+
+cd ../../.. || exit 1
+
 echo "Running go generate"
 
-go generate ./...
+go generate ./... || exit 1
 
 echo "Fetching latest version information"
 
 # Fetch the latest to ensure we have the latest tag
-git fetch origin
+git fetch origin || exit 1
 
 # Get the version from the git tag
 # If not available, default to v0.0.0

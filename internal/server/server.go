@@ -91,6 +91,7 @@ func (s *Server) setup() {
 	// The order of handlers is very important,
 	// The last handler added, is the first handler for any request
 	s.server.Handler = logger.NewHandler(s.logger)(s.server.Handler)
+	s.server.Handler = handlers.AssignRequestIDHandler(s.server.Handler)
 	s.server.Handler = handlers.RecoveryHandler(s.logger)(s.server.Handler)
 
 }

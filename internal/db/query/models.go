@@ -113,11 +113,12 @@ type Topic struct {
 }
 
 type User struct {
-	ID        int32     `db:"id"`
-	Name      string    `db:"name"`
-	Email     string    `db:"email"`
-	Password  string    `db:"password"`
-	Role      UserRole  `db:"role"`
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	ID            int32     `db:"id"`
+	Name          string    `db:"name"`
+	Email         string    `db:"email"`
+	Password      string    `db:"password"`
+	Role          UserRole  `db:"role"`
+	EmailVerified bool      `db:"email_verified"`
+	CreatedAt     time.Time `db:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at"`
 }

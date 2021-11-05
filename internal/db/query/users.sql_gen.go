@@ -10,7 +10,7 @@ import (
 const addUser = `-- name: AddUser :one
 INSERT INTO users(name, email, password, role)
 VALUES ($1, $2, $3, $4)
-RETURNING id, name, email, password, role, created_at, updated_at
+RETURNING id, name, email, password, role, email_verified, created_at, updated_at
 `
 
 type AddUserParams struct {
@@ -34,6 +34,7 @@ func (q *Queries) AddUser(ctx context.Context, arg AddUserParams) (User, error) 
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.EmailVerified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -52,7 +53,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const fetchAllUsers = `-- name: FetchAllUsers :many
-SELECT id, name, email, password, role, created_at, updated_at
+SELECT id, name, email, password, role, email_verified, created_at, updated_at
 FROM users
 `
 
@@ -71,6 +72,7 @@ func (q *Queries) FetchAllUsers(ctx context.Context) ([]User, error) {
 			&i.Email,
 			&i.Password,
 			&i.Role,
+			&i.EmailVerified,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -85,7 +87,7 @@ func (q *Queries) FetchAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const fetchUser = `-- name: FetchUser :one
-SELECT id, name, email, password, role, created_at, updated_at
+SELECT id, name, email, password, role, email_verified, created_at, updated_at
 FROM users
 WHERE id = $1
 `
@@ -99,6 +101,7 @@ func (q *Queries) FetchUser(ctx context.Context, id int32) (User, error) {
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.EmailVerified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -111,7 +114,7 @@ SET name           = $1,
     email          = $2,
     role           = $3
 WHERE id = $4
-RETURNING id, name, email, password, role, created_at, updated_at
+RETURNING id, name, email, password, role, email_verified, created_at, updated_at
 `
 
 type UpdateUserParams struct {
@@ -135,6 +138,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.EmailVerified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -145,7 +149,7 @@ const updateUserPassword = `-- name: UpdateUserPassword :one
 UPDATE users
 SET password = $1
 WHERE id = $2
-RETURNING id, name, email, password, role, created_at, updated_at
+RETURNING id, name, email, password, role, email_verified, created_at, updated_at
 `
 
 type UpdateUserPasswordParams struct {
@@ -162,6 +166,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.EmailVerified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

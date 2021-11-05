@@ -112,18 +112,16 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET name           = $1,
     email          = $2,
-    role           = $3,
-    email_verified = $4
-WHERE id = $5
+    role           = $3
+WHERE id = $4
 RETURNING id, name, email, password, role, email_verified, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	Name          string   `db:"name"`
-	Email         string   `db:"email"`
-	Role          UserRole `db:"role"`
-	EmailVerified bool     `db:"email_verified"`
-	ID            int32    `db:"id"`
+	Name  string   `db:"name"`
+	Email string   `db:"email"`
+	Role  UserRole `db:"role"`
+	ID    int32    `db:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -131,7 +129,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Name,
 		arg.Email,
 		arg.Role,
-		arg.EmailVerified,
 		arg.ID,
 	)
 	var i User

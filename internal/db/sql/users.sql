@@ -13,9 +13,8 @@ RETURNING *;
 UPDATE users
 SET name           = $1,
     email          = $2,
-    role           = $3,
-    email_verified = $4
-WHERE id = $5
+    role           = $3
+WHERE id = $4
 RETURNING *;
 
 -- name: DeleteUser :exec

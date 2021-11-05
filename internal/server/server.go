@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/aveloper/blog/internal/http/handlers"
 	"net/http"
 	"os"
 	"os/signal"
@@ -86,7 +87,12 @@ func (s *Server) setup() {
 	// Add middlewares and handlers here
 
 	s.server.Handler = s.router
+
+	// The order of handlers is very important,
+	// The last handler added, is the first handler for any request
 	s.server.Handler = logger.NewHandler(s.logger)(s.server.Handler)
+	s.server.Handler = handlers.RecoveryHandler(s.logger)(s.server.Handler)
+
 }
 
 func (s *Server) graceFullShutdown() {

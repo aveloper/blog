@@ -23,6 +23,7 @@ func NewRepository(db *db.DB, log *zap.Logger) *Repository {
 	}
 }
 
+//GetUser fetch the user from users by given id
 func (r *Repository) GetUser(ctx context.Context, id int32) (*query.User, error) {
 	u, err := r.q.FetchUser(ctx, id)
 	if err != nil {
@@ -33,14 +34,15 @@ func (r *Repository) GetUser(ctx context.Context, id int32) (*query.User, error)
 	return &u, nil
 }
 
-func (r *Repository) GetAllUsers(ctx context.Context) (*[]query.User, error) {
+//GetAllUsers fetch all the users from users
+func (r *Repository) GetAllUsers(ctx context.Context) ([]query.User, error) {
 	u, err := r.q.FetchAllUsers(ctx)
 	if err != nil {
 		r.log.Error("failed to get the user", zap.Error(err))
 		return nil, err
 	}
 
-	return &u, nil
+	return u, nil
 }
 
 //AddUser adds a new User

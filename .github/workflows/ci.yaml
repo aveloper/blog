@@ -24,6 +24,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Build Vue App
+        run: cd internal/admin/ui && npm ci && npm run build
+
       - name: Cache go mod
         uses: actions/cache@v2
         with:
@@ -54,6 +57,9 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Build Vue App
+        run: cd internal/admin/ui && npm ci && npm run build
 
       - name: Cache go mod
         uses: actions/cache@v2

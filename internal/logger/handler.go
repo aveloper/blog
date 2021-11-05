@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"github.com/aveloper/blog/internal/blogcontext"
 	"net"
 	"net/http"
 	"strings"
@@ -82,7 +83,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	requestStopTime := h.clock.Since(requestStartTime)
 
-	reqID := ""
+	reqID, err := blogcontext.GetRequestID(r.Context())
+	if err != nil {
+		h.log.Error("failed to read request id", zap.Error(err))
+	}
 
 	logEntry.Info(
 		"HTTP request received",

@@ -2,6 +2,7 @@ package response
 
 import (
 	"encoding/json"
+	"github.com/aveloper/blog/internal/blogcontext"
 	"net/http"
 	"time"
 
@@ -103,5 +104,11 @@ func (j *JSONWriter) jsonWrite(w http.ResponseWriter, data interface{}, statusCo
 }
 
 func (j *JSONWriter) getRequestID(r *http.Request) string {
-	return ""
+	id, err := blogcontext.GetRequestID(r.Context())
+	if err != nil {
+		j.log.Error("failed to read request-id", zap.Error(err))
+		return ""
+	}
+
+	return id
 }

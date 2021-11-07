@@ -54,6 +54,55 @@ func TestReader_ReadJSONAndValidate(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
 	})
 
+	t.Run("test that reading request fails with no data", func(t *testing.T) {
+		rr := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/some/endpoint", bytes.NewReader([]byte("")))
+
+		output := &testRequest{}
+
+		ok := reader.ReadJSONAndValidate(rr, req, output)
+		assert.False(t, ok)
+		assert.Equal(t, http.StatusBadRequest, rr.Code)
+	})
+
+	t.Run("test that reading request fails with invalid field type", func(t *testing.T) {
+		input := map[string]interface{}{
+			"field_1": 1,
+			"field_2": "test@mail.com",
+		}
+
+		inputJson, err := json.Marshal(input)
+		assert.Nil(t, err)
+
+		rr := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/some/endpoint", bytes.NewReader(inputJson))
+
+		output := &testRequest{}
+
+		ok := reader.ReadJSONAndValidate(rr, req, output)
+		assert.False(t, ok)
+		assert.Equal(t, http.StatusBadRequest, rr.Code)
+	})
+
+	t.Run("test that reading request fails with unknown field", func(t *testing.T) {
+		input := map[string]interface{}{
+			"field_1": "hello",
+			"field_3": "test@mail.com",
+		}
+
+		inputJson, err := json.Marshal(input)
+		assert.Nil(t, err)
+
+		rr := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/some/endpoint", bytes.NewReader(inputJson))
+
+		output := &testRequest{}
+
+		ok := reader.ReadJSONAndValidate(rr, req, output)
+		assert.False(t, ok)
+		assert.Equal(t, http.StatusBadRequest, rr.Code)
+	})
+
 	t.Run("test that reading request succeeds with correct data", func(t *testing.T) {
 		input := &testRequest{
 			Field1: "1",

@@ -40,6 +40,22 @@ func TestRecoveryHandler_API(t *testing.T) {
 	assert.Equal(t, "application/json", rr.Header().Get("Content-Type"))
 }
 
+func TestRecoveryHandler_noPanic(t *testing.T) {
+	nextHandler := http.HandlerFunc(normalHandler)
+
+	handler := RecoveryHandler(log, jw)(nextHandler)
+
+	r := httptest.NewRequest(http.MethodGet, "/api/endpoint", nil)
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, r)
+
+	assert.Equal(t, http.StatusOK, rr.Code)
+}
+
 func handlerThatPanics(_ http.ResponseWriter, _ *http.Request) {
 	panic("test panic")
+}
+
+func normalHandler(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

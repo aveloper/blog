@@ -3,15 +3,11 @@ package response
 import (
 	"github.com/aveloper/blog/internal/blogcontext"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-)
-
-var (
-	log = zap.NewExample()
 )
 
 const (
@@ -37,6 +33,7 @@ func (t *testError) Data() interface{} {
 }
 
 func TestJSONWriter_Ok(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -46,6 +43,7 @@ func TestJSONWriter_Ok(t *testing.T) {
 }
 
 func TestJSONWriter_BadRequest(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -55,6 +53,7 @@ func TestJSONWriter_BadRequest(t *testing.T) {
 }
 
 func TestJSONWriter_DefaultError(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -64,6 +63,7 @@ func TestJSONWriter_DefaultError(t *testing.T) {
 }
 
 func TestJSONWriter_Forbidden(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -73,6 +73,7 @@ func TestJSONWriter_Forbidden(t *testing.T) {
 }
 
 func TestJSONWriter_Internal(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -82,6 +83,7 @@ func TestJSONWriter_Internal(t *testing.T) {
 }
 
 func TestJSONWriter_NotFound(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -91,6 +93,7 @@ func TestJSONWriter_NotFound(t *testing.T) {
 }
 
 func TestJSONWriter_Unauthorized(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -100,6 +103,7 @@ func TestJSONWriter_Unauthorized(t *testing.T) {
 }
 
 func TestJSONWriter_UnprocessableEntity(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, r := getResponseRequest()
 
@@ -109,6 +113,7 @@ func TestJSONWriter_UnprocessableEntity(t *testing.T) {
 }
 
 func TestJSONWriter_buildError(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 
 	err := jw.buildError(&defaultErr{})
@@ -122,6 +127,7 @@ func TestJSONWriter_buildError(t *testing.T) {
 }
 
 func TestJSONWriter_buildResponse(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 
 	t.Run("test success response", func(t *testing.T) {
@@ -160,6 +166,7 @@ func TestJSONWriter_buildResponse(t *testing.T) {
 }
 
 func TestJSONWriter_getRequestID(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	_, r := getResponseRequest()
 
@@ -169,6 +176,7 @@ func TestJSONWriter_getRequestID(t *testing.T) {
 }
 
 func TestJSONWriter_jsonWrite(t *testing.T) {
+	log := zaptest.NewLogger(t)
 	jw := NewJSONWriter(log)
 	rr, _ := getResponseRequest()
 

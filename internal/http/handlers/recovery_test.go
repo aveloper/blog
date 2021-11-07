@@ -3,18 +3,16 @@ package handlers
 import (
 	"github.com/aveloper/blog/internal/http/response"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-var (
-	log = zap.NewExample()
-	jw  = response.NewJSONWriter(log)
-)
-
 func TestRecoveryHandler_web(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+
 	nextHandler := http.HandlerFunc(handlerThatPanics)
 
 	handler := RecoveryHandler(log, jw)(nextHandler)
@@ -28,6 +26,9 @@ func TestRecoveryHandler_web(t *testing.T) {
 }
 
 func TestRecoveryHandler_API(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+
 	nextHandler := http.HandlerFunc(handlerThatPanics)
 
 	handler := RecoveryHandler(log, jw)(nextHandler)
@@ -41,6 +42,9 @@ func TestRecoveryHandler_API(t *testing.T) {
 }
 
 func TestRecoveryHandler_noPanic(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+
 	nextHandler := http.HandlerFunc(normalHandler)
 
 	handler := RecoveryHandler(log, jw)(nextHandler)

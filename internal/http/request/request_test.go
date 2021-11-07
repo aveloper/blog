@@ -6,16 +6,10 @@ import (
 	"github.com/aveloper/blog/internal/http/response"
 	"github.com/aveloper/blog/internal/validator"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-)
-
-var (
-	log    = zap.NewExample()
-	jw     = response.NewJSONWriter(log)
-	reader = NewReader(log, jw, validator.New(log))
 )
 
 type testRequest struct {
@@ -24,6 +18,10 @@ type testRequest struct {
 }
 
 func TestReader_ReadJSONAndValidate(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+	reader := NewReader(log, jw, validator.New(log))
+
 	t.Run("test that reading request fails with incorrect data", func(t *testing.T) {
 		input := &testRequest{
 			Field1: "1",
@@ -124,6 +122,10 @@ func TestReader_ReadJSONAndValidate(t *testing.T) {
 }
 
 func TestReader_ReadJSONRequest(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+	reader := NewReader(log, jw, validator.New(log))
+
 	input := &testRequest{
 		Field1: "1",
 		Field2: "2",
@@ -144,6 +146,10 @@ func TestReader_ReadJSONRequest(t *testing.T) {
 }
 
 func TestReader_validate(t *testing.T) {
+	log := zaptest.NewLogger(t)
+	jw := response.NewJSONWriter(log)
+	reader := NewReader(log, jw, validator.New(log))
+
 	t.Run("test that validation fails with incorrect data", func(t *testing.T) {
 		v := &testRequest{
 			Field1: "",

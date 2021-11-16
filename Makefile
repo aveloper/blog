@@ -23,6 +23,12 @@ build:
 run: build
 	./blog
 
+build_exe:
+	go build -ldflags="-X main.Version=1.0.0" -o "output/" ./cmd/blog
+
+run_api: build
+	./output/blog start --api-only
+
 install:
 	./output/blog install
 

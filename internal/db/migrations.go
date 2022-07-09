@@ -14,7 +14,7 @@ import (
 
 // migrationVersion defines the current migration version. This ensures the app
 // is always compatible with the version of the database.
-const migrationVersion = 1
+const migrationVersion = 2
 
 //go:embed migrations/*.sql
 var migrations embed.FS

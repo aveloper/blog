@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := build
 
+.PHONY: check_migrate add_migration check_lint check_sqlc lint build run install reset gen local_build dev
+
 check_migrate:
 	which migrate || go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.15.2
 
@@ -31,3 +33,14 @@ reset:
 
 gen:
 	go generate ./...
+
+
+check_air:
+	which air || go install github.com/cosmtrek/air@v1.40.3
+
+local_build: check_sqlc gen
+	@sh -c './scripts/build.sh'
+
+# Hot reload for development
+dev: check_air
+	air

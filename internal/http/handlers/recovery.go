@@ -18,12 +18,13 @@ type recoveryHandler struct {
 // RecoveryHandler is HTTP middleware that recovers from a panic,
 // logs the panic, writes http.StatusInternalServerError, and
 // continues to the next handler.
-func RecoveryHandler(log *zap.Logger) func(h http.Handler) http.Handler {
+func RecoveryHandler(log *zap.Logger, jw *response.JSONWriter) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		r := &recoveryHandler{
-			handler:  h,
-			log:      log,
-			apiRegex: regexp.MustCompile(`^/api/`),
+			handler:    h,
+			log:        log,
+			jsonWriter: jw,
+			apiRegex:   regexp.MustCompile(`^/api/`),
 		}
 
 		return r

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/aveloper/blog/internal/http/handlers"
+	"github.com/aveloper/blog/internal/http/response"
 	"net/http"
 	"os"
 	"os/signal"
@@ -36,6 +37,8 @@ type Server struct {
 	connClose chan int
 
 	apiOnly bool
+
+	jsonWriter *response.JSONWriter
 }
 
 type Config struct {
@@ -56,8 +59,9 @@ func NewServer(cfg *Config, db *db.DB) *Server {
 			ReadTimeout:  2 * time.Second,
 			WriteTimeout: 5 * time.Second,
 		},
-		apiOnly: cfg.APIOnly,
-		db:      db,
+		apiOnly:    cfg.APIOnly,
+		db:         db,
+		jsonWriter: response.NewJSONWriter(cfg.Logger),
 	}
 }
 
@@ -92,7 +96,7 @@ func (s *Server) setup() {
 	// The last handler added, is the first handler for any request
 	s.server.Handler = logger.NewHandler(s.logger)(s.server.Handler)
 	s.server.Handler = handlers.AssignRequestIDHandler(s.server.Handler)
-	s.server.Handler = handlers.RecoveryHandler(s.logger)(s.server.Handler)
+	s.server.Handler = handlers.RecoveryHandler(s.logger, s.jsonWriter)(s.server.Handler)
 
 }
 

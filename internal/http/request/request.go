@@ -46,7 +46,9 @@ func (read *Reader) ReadJSONAndValidate(w http.ResponseWriter, r *http.Request, 
 
 // ReadJSONRequest reads a json request body into the given struct
 func (read *Reader) ReadJSONRequest(r *http.Request, v interface{}) error {
-	return json.NewDecoder(r.Body).Decode(v)
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
+	return d.Decode(v)
 }
 
 //validate functions uses the validator to test issues with the given data

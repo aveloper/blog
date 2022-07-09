@@ -1,9 +1,5 @@
 #!/bin/sh
 
-echo "Running go generate"
-
-go generate ./...
-
 echo "Fetching latest version information"
 
 # Fetch the latest to ensure we have the latest tag
@@ -18,7 +14,7 @@ VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 # Refer here to learn about ldflags -> https://www.digitalocean.com/community/tutorials/using-ldflags-to-set-version-information-for-go-applications
 LDFLAGS="-X main.Version=$VERSION"
 
-OUTPUT='output/'
+OUTPUT='bin/'
 
 echo "Building app $VERSION"
 
